@@ -74,7 +74,7 @@ p { margin: 0 0 1em; }
 /* Header */
 .topbar { background: var(--ink); color: #cfc8ba; font-size: 0.85rem; }
 .topbar .container { display: flex; justify-content: space-between; gap: 12px; padding-top: 7px; padding-bottom: 7px; }
-.topbar a { text-decoration: none; color: var(--white); }
+.topbar a { text-decoration: none; color: var(--accent); font-weight: 600; }
 .site-header { position: sticky; top: 0; z-index: 50; background: var(--white); border-bottom: 1px solid var(--line); }
 .site-header .container { display: flex; align-items: center; justify-content: space-between; height: 76px; }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
