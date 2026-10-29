@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { services, testimonials } from '../data/site.js';
+const featured = services.filter((s) => ['kitchens', 'bathrooms', 'interiors'].includes(s.slug));
+const t = testimonials[0];
+---
+<Base>
+  <section class="hero">
+    <Photo file="IMG_4622.jpeg" alt="Recently completed home remodel by JC Suchite Construction" eager />
+    <div class="container">
+      <span class="eyebrow">Licensed & Insured · Free Estimates</span>
+      <h1>Exceptional Home Remodeling & Renovations</h1>
+      <div class="actions">
+        <a class="btn" href="/contact">Get A Free Estimate</a>
+        <a class="btn btn--ghost" href="/work">See Our Work</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <Photo file="IMG_1712.jpeg" alt="Kitchen remodel detail" />
+      <div>
+        <span class="eyebrow">About JC Suchite</span>
+        <h2>Reliability, Quality, Accuracy</h2>
+        <p class="lead">Over the years, I have successfully completed a variety of projects that clearly reflect my capabilities and the scope of work I can take on. To find out more, contact me today and let’s start planning the job that’s right for your home.</p>
+        <a class="btn" href="/about">More About Us</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark">
+    <div class="container">
+      <span class="eyebrow">Why Choose Us</span>
+      <h2 style="margin-bottom: 40px">Built Right, Start to Finish</h2>
+      <div class="features">
+        <div class="feature"><span class="num">01</span><h3>Free, At-Home Consultations</h3><p>Best service, guaranteed. We come to you, walk the space and talk through your goals at no cost.</p></div>
+        <div class="feature"><span class="num">02</span><h3>Getting It Done</h3><p>When you book a service with JC Suchite Construction, we take care of every aspect of the project: planning, budgeting and executing.</p></div>
+        <div class="feature"><span class="num">03</span><h3>Licensed & Insured</h3><p>For your safety and protection — and your peace of mind from the first day to the final walkthrough.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow">What We Do</span><h2>Our Services Include</h2></div>
+        <a class="btn btn--ghost" href="/services">See All Services</a>
+      </div>
+      <div class="cards">
+        {featured.map((s) => (
+          <a class="card" href={`/${s.slug}`}>
+            <Photo file={s.cover} alt={`${s.title} remodel`} />
+            <div class="card-body"><h3>{s.title}</h3><p>{s.blurb}</p><span class="card-link">View Projects →</span></div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container quote">
+      <span class="eyebrow">Satisfied Customers</span>
+      <blockquote>{t.quote}</blockquote>
+      <cite>— {t.name}</cite>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <div class="container"><ContactSection /></div>
+  </section>
+</Base>

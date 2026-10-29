@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import Gallery from '../components/Gallery.astro';
+import CTA from '../components/CTA.astro';
+import { services } from '../data/site.js';
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { service: s.slug }, props: { s } }));
+}
+const { s } = Astro.props;
+---
+<Base title={s.title} description={`${s.title} remodeling by JC Suchite Construction. ${s.blurb} Serving Los Angeles, Santa Clarita, Woodland Hills and San Fernando.`} ogImage={`/images/${s.cover}`}>
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow"><a href="/services" style="text-decoration:none">Services</a> / {s.title}</span>
+      <h1>{s.title}</h1>
+      <p class="lead">{s.blurb}</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container"><Gallery files={s.gallery} label={`${s.title} project photo`} /></div>
+  </section>
+  <CTA />
+</Base>

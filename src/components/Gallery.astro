@@ -1,0 +1,11 @@
+---
+import Photo from './Photo.astro';
+const { files = [], label = 'Project photo' } = Astro.props;
+---
+<div class="gallery" data-gallery>
+  {files.map((f, i) => (
+    <button type="button" data-index={i} aria-label={`Open ${label} ${i + 1}`}>
+      <Photo file={f} alt={`${label} ${i + 1}`} />
+    </button>
+  ))}
+</div>

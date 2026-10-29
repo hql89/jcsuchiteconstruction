@@ -1,0 +1,10 @@
+---
+import { img } from '../data/site.js';
+import dims from '../data/dims.json';
+const { file, alt = '', class: cls = '', eager = false } = Astro.props;
+const [width, height] = dims[file] || [];
+---
+<div class={`ph ${cls}`}>
+  <img src={img(file)} alt={alt} width={width} height={height} loading={eager ? 'eager' : 'lazy'} decoding="async"
+       onerror="this.parentElement.classList.add('missing')" />
+</div>

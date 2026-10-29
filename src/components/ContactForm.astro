@@ -1,0 +1,45 @@
+---
+import { business } from '../data/site.js';
+---
+<form class="form" id="contact-form" action="/api/contact" method="post" novalidate>
+  <div><label for="cf-first">First Name *</label><input id="cf-first" name="firstName" autocomplete="given-name" required /></div>
+  <div><label for="cf-last">Last Name</label><input id="cf-last" name="lastName" autocomplete="family-name" /></div>
+  <div><label for="cf-email">Email *</label><input id="cf-email" name="email" type="email" autocomplete="email" required /></div>
+  <div><label for="cf-phone">Phone</label><input id="cf-phone" name="phone" type="tel" autocomplete="tel" /></div>
+  <div class="full"><label for="cf-address">Project Address</label><input id="cf-address" name="address" autocomplete="street-address" /></div>
+  <div class="full"><label for="cf-subject">Subject</label><input id="cf-subject" name="subject" placeholder="e.g. Kitchen remodel" /></div>
+  <div class="full"><label for="cf-message">Message *</label><textarea id="cf-message" name="message" required placeholder="Tell us about your project..."></textarea></div>
+  <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <button class="btn" type="submit">Submit</button>
+  <p class="form-status" role="status" aria-live="polite"></p>
+</form>
+<script define:vars={{ phone: business.phone, email: business.email }}>
+  const form = document.getElementById('contact-form');
+  const status = form.querySelector('.form-status');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    status.className = 'form-status';
+    const data = Object.fromEntries(new FormData(form));
+    if (!data.firstName || !data.email || !data.message) {
+      status.textContent = 'Please fill in your first name, email and message.';
+      status.classList.add('err');
+      return;
+    }
+    const btn = form.querySelector('button[type=submit]');
+    btn.disabled = true; btn.textContent = 'Sending...';
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error();
+      form.reset();
+      status.textContent = 'Thanks for submitting! We’ll be in touch shortly.';
+      status.classList.add('ok');
+    } catch {
+      status.textContent = `Sorry, something went wrong. Please call ${phone} or email ${email}.`;
+      status.classList.add('err');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Submit';
+    }
+  });
+</script>

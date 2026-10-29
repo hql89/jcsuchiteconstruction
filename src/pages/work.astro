@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import Gallery from '../components/Gallery.astro';
+import CTA from '../components/CTA.astro';
+import { workGallery } from '../data/site.js';
+---
+<Base title="Work" description="Browse recently completed remodeling projects by JC Suchite Construction.">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Portfolio</span>
+      <h1>Our Work</h1>
+      <p class="lead">You’re invited to browse a selection of recently completed projects below.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container"><Gallery files={workGallery} label="Completed project photo" /></div>
+  </section>
+  <CTA />
+</Base>

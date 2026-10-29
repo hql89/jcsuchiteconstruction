@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+import CTA from '../components/CTA.astro';
+import { services } from '../data/site.js';
+---
+<Base title="Services" description="Kitchen and bathroom remodels, interiors, exteriors and home additions across Greater Los Angeles and Santa Clarita.">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">What We Do</span>
+      <h1>Our Services</h1>
+      <p class="lead">Let us help you make your dreams a reality.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="cards cards--5">
+        {services.map((s) => (
+          <a class="card" href={`/${s.slug}`}>
+            <Photo file={s.cover} alt={`${s.title} project`} />
+            <div class="card-body"><h3>{s.title}</h3><p>{s.blurb}</p><span class="card-link">View Projects →</span></div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CTA />
+</Base>

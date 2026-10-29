@@ -1,0 +1,183 @@
+---
+import '../styles/global.css';
+import { business, services } from '../data/site.js';
+
+const {
+  title,
+  description = 'JC Suchite Construction — licensed & insured home remodeling and renovations in Los Angeles, Santa Clarita, Woodland Hills and San Fernando. Kitchens, bathrooms, interiors, exteriors and additions. Free in-home estimates.',
+  ogImage = '/images/IMG_4622.jpeg',
+} = Astro.props;
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const fullTitle = title ? `${title} | ${business.name}` : `${business.name} | Home Remodeling & Renovations`;
+const canonical = new URL(path, Astro.site).href;
+const isServicePath = path === '/services' || services.some((s) => `/${s.slug}` === path);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  name: business.name,
+  url: Astro.site.href,
+  telephone: '+1-818-917-2197',
+  email: business.email,
+  image: new URL(ogImage, Astro.site).href,
+  areaServed: business.serviceAreas.map((c) => ({ '@type': 'City', name: `${c}, CA` })),
+  sameAs: [business.facebook, business.tiktok],
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+    <meta name="theme-color" content="#1c1b19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to main content</a>
+    <div class="topbar">
+      <div class="container">
+        <span class="areas">Serving {business.serviceAreas.join(' · ')}</span>
+        <span>Call for a free estimate: <a href={business.phoneHref}>{business.phone}</a></span>
+      </div>
+    </div>
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="/" aria-label={`${business.name} home`}>
+          <span class="brand-mark">J<span>C</span></span>
+          <span class="brand-text">JC Suchite<small>Construction</small></span>
+        </a>
+        <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
+        <nav class="nav" id="nav" aria-label="Main">
+          <a href="/" aria-current={path === '/' ? 'page' : undefined}>Home</a>
+          <a href="/about" aria-current={path === '/about' ? 'page' : undefined}>About</a>
+          <div class="dd">
+            <button type="button" aria-haspopup="true" style={isServicePath ? 'color: var(--accent)' : undefined}>Services ▾</button>
+            <div class="dd-menu">
+              <a href="/services">All Services</a>
+              {services.map((s) => <a href={`/${s.slug}`}>{s.title}</a>)}
+            </div>
+          </div>
+          <a href="/work" aria-current={path === '/work' ? 'page' : undefined}>Work</a>
+          <a href="/contact" aria-current={path === '/contact' ? 'page' : undefined}>Contact</a>
+          <a class="btn" href="/contact">Free Estimate</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main"><slot /></main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a class="brand" href="/">
+              <span class="brand-mark">J<span>C</span></span>
+              <span class="brand-text">JC Suchite<small>Construction</small></span>
+            </a>
+            <p>Exceptional home remodeling & renovations. Licensed & insured.</p>
+            <div class="socials">
+              <a href={business.facebook} target="_blank" rel="noopener" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-2.8 0-4 1.8-4 4.3V10H7v4h3v8h4v-8h3l1-4h-4V8.6c0-.4.3-.6.7-.6z"/></svg>
+              </a>
+              <a href={business.tiktok} target="_blank" rel="noopener" aria-label="TikTok">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 3c.4 2.3 1.9 3.9 4 4.1v3.3c-1.5 0-2.8-.4-4-1.1v6.4c0 3.4-2.6 5.8-5.8 5.8S5 19 5 15.7c0-3.4 2.8-6 6.3-5.7v3.4c-1.5-.3-2.9.8-2.9 2.3 0 1.3 1 2.4 2.4 2.4 1.5 0 2.4-1.1 2.4-2.6V3h3.3z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div>
+            <h4>Services</h4>
+            <ul>{services.map((s) => <li><a href={`/${s.slug}`}>{s.title}</a></li>)}</ul>
+          </div>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="/about">About</a></li>
+              <li><a href="/work">Our Work</a></li>
+              <li><a href="/contact">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Contact</h4>
+            <ul>
+              <li><a href={business.phoneHref}>{business.phone}</a></li>
+              <li><a href={`mailto:${business.email}`}>{business.email}</a></li>
+              <li>{business.serviceAreaSummary}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© {new Date().getFullYear()} {business.name}. All rights reserved.</span>
+          <span>Licensed & Insured</span>
+        </div>
+      </div>
+    </footer>
+
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+      <button class="lb-close" aria-label="Close">×</button>
+      <button class="lb-prev" aria-label="Previous photo">‹</button>
+      <img alt="" />
+      <button class="lb-next" aria-label="Next photo">›</button>
+    </div>
+
+    <script>
+      // Mobile menu
+      const toggle = document.querySelector('.menu-toggle');
+      const nav = document.getElementById('nav');
+      toggle?.addEventListener('click', () => {
+        const open = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+      document.querySelectorAll('.dd > button').forEach((b) =>
+        b.addEventListener('click', () => b.parentElement.classList.toggle('open'))
+      );
+
+      // Gallery lightbox
+      const lb = document.getElementById('lightbox');
+      const lbImg = lb.querySelector('img');
+      let items = [];
+      let idx = 0;
+      const show = (i) => {
+        idx = (i + items.length) % items.length;
+        const src = items[idx].querySelector('img');
+        lbImg.src = src.src;
+        lbImg.alt = src.alt;
+      };
+      document.querySelectorAll('[data-gallery]').forEach((g) => {
+        const btns = [...g.querySelectorAll('button')];
+        btns.forEach((b, i) =>
+          b.addEventListener('click', () => {
+            items = btns.filter((x) => !x.querySelector('.missing'));
+            if (b.querySelector('.missing')) return;
+            lb.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            show(items.indexOf(b));
+          })
+        );
+      });
+      const close = () => { lb.classList.remove('open'); document.body.style.overflow = ''; };
+      lb.querySelector('.lb-close').addEventListener('click', close);
+      lb.querySelector('.lb-prev').addEventListener('click', () => show(idx - 1));
+      lb.querySelector('.lb-next').addEventListener('click', () => show(idx + 1));
+      lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+      document.addEventListener('keydown', (e) => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') show(idx - 1);
+        if (e.key === 'ArrowRight') show(idx + 1);
+      });
+    </script>
+  </body>
+</html>
