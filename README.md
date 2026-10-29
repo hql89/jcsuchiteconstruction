@@ -10,10 +10,12 @@ Static Astro site + one Vercel serverless function for the contact form. Replace
 - Page text: `src/pages/*.astro`
 - Colors/fonts: top of `src/styles/global.css`
 
-## Photos (required)
-Put the original Wix photos in `public/images/` using the **exact original filenames** (e.g. `IMG_4622.jpeg`, `IMG-31.jpg`).
-Get them from Wix: Dashboard → Media → Site Files → select all → Download. The full list is in `public/images/README.md`.
-Until a photo is added, its slot shows a dark placeholder.
+## Photos
+Photos live in `src/assets/images/`. Astro automatically resizes them and converts them to WebP at build time.
+To add a photo: drop it in that folder, then add its filename to a service's `gallery` list in `src/data/site.js`.
+
+## License number
+Set `license` in `src/data/site.js` to the CSLB license number — it then shows in the footer and in Google's business data.
 
 ## Run locally
 ```

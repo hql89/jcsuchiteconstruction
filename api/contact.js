@@ -32,6 +32,8 @@ export default async function handler(req, res) {
     phone: clip(body.phone, 40),
     address: clip(body.address, 200),
     subject: clip(body.subject, 200),
+    projectType: clip(body.projectType, 60),
+    timeline: clip(body.timeline, 60),
     message: clip(body.message, 5000),
   };
 
@@ -48,7 +50,7 @@ export default async function handler(req, res) {
 
   const name = `${f.firstName} ${f.lastName}`.trim();
   const rows = [
-    ['Name', name], ['Email', f.email], ['Phone', f.phone], ['Address', f.address], ['Subject', f.subject],
+    ['Name', name], ['Email', f.email], ['Phone', f.phone], ['Address', f.address], ['Project type', f.projectType], ['Timeline', f.timeline], ['Subject', f.subject],
   ].filter(([, v]) => v);
 
   const html = `
@@ -67,7 +69,7 @@ export default async function handler(req, res) {
         from: process.env.CONTACT_FROM_EMAIL || 'JC Suchite Website <onboarding@resend.dev>',
         to: to.split(',').map((s) => s.trim()),
         reply_to: f.email,
-        subject: `Website inquiry: ${f.subject || 'New project'} — ${name}`,
+        subject: `Website inquiry: ${f.subject || f.projectType || 'New project'} — ${name}`,
         html,
         text,
       }),

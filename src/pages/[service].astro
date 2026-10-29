@@ -2,14 +2,14 @@
 import Base from '../layouts/Base.astro';
 import Gallery from '../components/Gallery.astro';
 import CTA from '../components/CTA.astro';
-import { services } from '../data/site.js';
+import { services, business } from '../data/site.js';
 
 export function getStaticPaths() {
   return services.map((s) => ({ params: { service: s.slug }, props: { s } }));
 }
 const { s } = Astro.props;
 ---
-<Base title={s.title} description={`${s.title} remodeling by JC Suchite Construction. ${s.blurb} Serving Los Angeles, Santa Clarita, Woodland Hills and San Fernando.`} ogImage={`/images/${s.cover}`}>
+<Base title={`${s.seoTitle} in Los Angeles & Santa Clarita`} description={`${s.title} remodeling by JC Suchite Construction. ${s.blurb} Serving Los Angeles, Santa Clarita, Woodland Hills and San Fernando.`} ogImage={s.cover}>
   <section class="page-hero">
     <div class="container">
       <span class="eyebrow"><a href="/services" style="text-decoration:none">Services</a> / {s.title}</span>
@@ -18,7 +18,16 @@ const { s } = Astro.props;
     </div>
   </section>
   <section class="section">
-    <div class="container"><Gallery files={s.gallery} label={`${s.title} project photo`} /></div>
+    <div class="container">
+      <div class="service-intro">
+        <h2>{s.seoTitle} in {business.serviceAreas.slice(0, -1).join(', ')} & {business.serviceAreas.at(-1)}</h2>
+        <p class="lead">{s.description}</p>
+        <p>Every project starts with a free in-home consultation and a clear, detailed estimate. JC Suchite Construction is licensed and insured, and we stay with the job until you’re fully satisfied.</p>
+        <a class="btn" href="/contact">Get A Free Estimate</a>
+      </div>
+      <h2 class="gallery-title">Recent {s.title} Projects</h2>
+      <Gallery files={s.gallery} label={`${s.title} project photo`} />
+    </div>
   </section>
   <CTA />
 </Base>

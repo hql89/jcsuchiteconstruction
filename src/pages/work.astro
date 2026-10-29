@@ -2,18 +2,29 @@
 import Base from '../layouts/Base.astro';
 import Gallery from '../components/Gallery.astro';
 import CTA from '../components/CTA.astro';
-import { workGallery } from '../data/site.js';
+import { services } from '../data/site.js';
 ---
-<Base title="Work" description="Browse recently completed remodeling projects by JC Suchite Construction.">
+<Base title="Work" description="Browse recently completed kitchen, bathroom, interior, exterior and addition projects by JC Suchite Construction.">
   <section class="page-hero">
     <div class="container">
       <span class="eyebrow">Portfolio</span>
       <h1>Our Work</h1>
       <p class="lead">You’re invited to browse a selection of recently completed projects below.</p>
+      <nav class="work-tabs" aria-label="Jump to project type">
+        {services.map((s) => <a href={`#${s.slug}`}>{s.title}</a>)}
+      </nav>
     </div>
   </section>
-  <section class="section">
-    <div class="container"><Gallery files={workGallery} label="Completed project photo" /></div>
-  </section>
+  {services.map((s, i) => (
+    <section class={`section ${i % 2 ? 'section--alt' : ''}`} id={s.slug}>
+      <div class="container">
+        <div class="section-head">
+          <h2>{s.title}</h2>
+          <a class="card-link" href={`/${s.slug}`}>About our {s.title.toLowerCase()} work →</a>
+        </div>
+        <Gallery files={s.gallery} label={`${s.title} project photo`} />
+      </div>
+    </section>
+  ))}
   <CTA />
 </Base>

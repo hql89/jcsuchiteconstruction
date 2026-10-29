@@ -1,11 +1,20 @@
 ---
+import { getImage } from 'astro:assets';
 import Photo from './Photo.astro';
+import { getPhoto } from '../data/images.js';
 const { files = [], label = 'Project photo' } = Astro.props;
+const items = await Promise.all(
+  files.map(async (f) => {
+    const src = getPhoto(f);
+    const full = await getImage({ src, width: Math.min(1600, src.width), format: 'webp', quality: 82 });
+    return { f, full: full.src };
+  })
+);
 ---
 <div class="gallery" data-gallery>
-  {files.map((f, i) => (
-    <button type="button" data-index={i} aria-label={`Open ${label} ${i + 1}`}>
-      <Photo file={f} alt={`${label} ${i + 1}`} />
+  {items.map(({ f, full }, i) => (
+    <button type="button" data-full={full} aria-label={`Open ${label} ${i + 1}`}>
+      <Photo file={f} alt={`${label} ${i + 1}`} sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 400px" widths={[400, 800]} />
     </button>
   ))}
 </div>

@@ -1,12 +1,17 @@
 ---
 import '../styles/global.css';
+import { getImage } from 'astro:assets';
 import { business, services } from '../data/site.js';
+import { getPhoto } from '../data/images.js';
 
 const {
   title,
   description = 'JC Suchite Construction — licensed & insured home remodeling and renovations in Los Angeles, Santa Clarita, Woodland Hills and San Fernando. Kitchens, bathrooms, interiors, exteriors and additions. Free in-home estimates.',
-  ogImage = '/images/IMG_4622.jpeg',
+  ogImage = 'IMG_4772.jpeg',
 } = Astro.props;
+
+const og = await getImage({ src: getPhoto(ogImage), width: 1200, format: 'jpg', quality: 80 });
+const ogUrl = new URL(og.src, Astro.site).href;
 
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const fullTitle = title ? `${title} | ${business.name}` : `${business.name} | Home Remodeling & Renovations`;
@@ -20,7 +25,8 @@ const jsonLd = {
   url: Astro.site.href,
   telephone: '+1-818-917-2197',
   email: business.email,
-  image: new URL(ogImage, Astro.site).href,
+  image: ogUrl,
+  ...(business.license ? { identifier: `CSLB License #${business.license}` } : {}),
   areaServed: business.serviceAreas.map((c) => ({ '@type': 'City', name: `${c}, CA` })),
   sameAs: [business.facebook, business.tiktok],
 };
@@ -38,7 +44,8 @@ const jsonLd = {
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+    <meta property="og:image" content={ogUrl} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#1c1b19" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -120,10 +127,15 @@ const jsonLd = {
         </div>
         <div class="footer-bottom">
           <span>© {new Date().getFullYear()} {business.name}. All rights reserved.</span>
-          <span>Licensed & Insured</span>
+          <span>Licensed & Insured{business.license && ` · CA License #${business.license}`}</span>
         </div>
       </div>
     </footer>
+
+    <a class="call-bar" href={business.phoneHref} aria-label={`Call ${business.name} at ${business.phone}`}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></svg>
+      Call for a Free Estimate
+    </a>
 
     <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
       <button class="lb-close" aria-label="Close">×</button>
@@ -151,16 +163,15 @@ const jsonLd = {
       let idx = 0;
       const show = (i) => {
         idx = (i + items.length) % items.length;
-        const src = items[idx].querySelector('img');
-        lbImg.src = src.src;
-        lbImg.alt = src.alt;
+        const b = items[idx];
+        lbImg.src = b.dataset.full;
+        lbImg.alt = b.querySelector('img').alt;
       };
       document.querySelectorAll('[data-gallery]').forEach((g) => {
         const btns = [...g.querySelectorAll('button')];
         btns.forEach((b, i) =>
           b.addEventListener('click', () => {
-            items = btns.filter((x) => !x.querySelector('.missing'));
-            if (b.querySelector('.missing')) return;
+            items = btns;
             lb.classList.add('open');
             document.body.style.overflow = 'hidden';
             show(items.indexOf(b));

@@ -1,10 +1,26 @@
 ---
-import { img } from '../data/site.js';
-import dims from '../data/dims.json';
-const { file, alt = '', class: cls = '', eager = false } = Astro.props;
-const [width, height] = dims[file] || [];
+import { Image } from 'astro:assets';
+import { getPhoto } from '../data/images.js';
+const {
+  file,
+  alt = '',
+  class: cls = '',
+  eager = false,
+  sizes = '(max-width: 820px) 100vw, 600px',
+  widths = [480, 800, 1200],
+} = Astro.props;
+const src = getPhoto(file);
+const usable = widths.filter((w) => w <= src.width);
 ---
 <div class={`ph ${cls}`}>
-  <img src={img(file)} alt={alt} width={width} height={height} loading={eager ? 'eager' : 'lazy'} decoding="async"
-       onerror="this.parentElement.classList.add('missing')" />
+  <Image
+    src={src}
+    alt={alt}
+    widths={usable.length ? usable : [src.width]}
+    sizes={sizes}
+    format="webp"
+    quality={78}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
+  />
 </div>
